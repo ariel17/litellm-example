@@ -9,6 +9,8 @@ litellm_settings:
     type: redis
     ttl: 600
     namespace: "litellm"
+  success_callback: ["langfuse"]
+  failure_callback: ["langfuse"]
 
 router_settings:
   routing_strategy: latency-based-routing

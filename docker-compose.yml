@@ -24,8 +24,6 @@ services:
       - POSTGRES_DB=litellm
     ports:
       - 5432:5432
-    volumes: 
-      - .postgresql:/var/lib/postgresql/data
 
   litellm:
     image: ghcr.io/berriai/litellm-database:main-latest
@@ -41,6 +39,8 @@ services:
       - REDIS_PASSWORD=1234567890
       - LITELLM_MASTER_KEY=sk-1234
       - DATABASE_URL=postgresql://postgres:1234567890@postgres:5432/litellm
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
     command: ["--config", "/app/config.yml"]
     depends_on:
       - ollama
