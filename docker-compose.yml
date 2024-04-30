@@ -8,8 +8,27 @@ services:
     volumes:
       - ./.ollama:/root/.ollama
 
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    command: redis-server --save 20 1 --loglevel warning --requirepass 1234567890
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234567890
+      - POSTGRES_DB=litellm
+    ports:
+      - 5432:5432
+    volumes: 
+      - .postgresql:/var/lib/postgresql/data
+
   litellm:
-    image: ghcr.io/berriai/litellm:main-latest
+    image: ghcr.io/berriai/litellm-database:main-latest
     ports:
       - 4000:4000
     volumes:
@@ -17,7 +36,13 @@ services:
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=1234567890
+      - LITELLM_MASTER_KEY=sk-1234
+      - DATABASE_URL=postgresql://postgres:1234567890@postgres:5432/litellm
     command: ["--config", "/app/config.yml"]
     depends_on:
       - ollama
-
+      - redis
+      - postgres

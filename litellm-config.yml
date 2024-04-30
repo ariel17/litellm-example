@@ -1,16 +1,42 @@
+litellm_settings:
+  set_verbose: True
+  num_retries: 3
+  request_timeout: 60
+  fallbacks: [{"gpt-3.5-turbo": ["claude-3-opus"]}, {"claude-3-opus": ["ollama-phi"]}]
+  context_window_fallbacks: [{"gpt-3.5-turbo": ["claude-3-opus"]}, {"claude-3-opus": ["ollama-phi"]}]
+  cache: True
+  cache_params:
+    type: redis
+    ttl: 600
+    namespace: "litellm"
+
+router_settings:
+  routing_strategy: latency-based-routing
+  num_retries: 2
+
 model_list:
   - model_name: gpt-3.5-turbo
     litellm_params:
       model: openai/gpt-3.5-turbo
       api_key: os.environ/OPENAI_API_KEY
+      input_cost_per_token: 0.0000005
+      output_cost_per_token: 0.0000015
+      stream_timeout: 20
   - model_name: claude-3-opus
     litellm_params:
       model: anthropic/claude-3-opus-20240229
       api_key: os.environ/ANTHROPIC_API_KEY
+      input_cost_per_token: 0.000015
+      output_cost_per_token: 0.000075
+      stream_timeout: 20
+    model_info:
+      mode: completion
   - model_name: ollama-phi
     litellm_params:
       model: ollama/phi
       api_base: http://ollama:11434
+    model_info:
+      mode: completion
 
         
 
