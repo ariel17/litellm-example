@@ -1,10 +1,13 @@
+general_settings:
+  store_model_in_db: true
+
 litellm_settings:
-  set_verbose: True
+  set_verbose: true
   num_retries: 3
   request_timeout: 60
   fallbacks: [{"gpt-3.5-turbo": ["claude-3-opus"]}, {"claude-3-opus": ["ollama-phi"]}]
   context_window_fallbacks: [{"gpt-3.5-turbo": ["claude-3-opus"]}, {"claude-3-opus": ["ollama-phi"]}]
-  cache: True
+  cache: true
   cache_params:
     type: redis
     ttl: 600
