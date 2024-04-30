@@ -1,0 +1,23 @@
+---
+services:
+  ollama:
+    image: ollama/ollama
+    ports:
+      - 11434:11434
+    restart: unless-stopped
+    volumes:
+      - ./.ollama:/root/.ollama
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    ports:
+      - 4000:4000
+    volumes:
+      - ./litellm-config.yml:/app/config.yml
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: ["--config", "/app/config.yml"]
+    depends_on:
+      - ollama
+
